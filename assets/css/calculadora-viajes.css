@@ -11,3 +11,15 @@
 	height: 555px;
 	width: 80%;
 }
+
+#direccion-inputs {
+	padding: 15px;
+}
+
+.direccion {
+	margin-bottom: 5px;
+}
+
+::placeholder {
+	font-size: 18px;
+}

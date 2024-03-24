@@ -37,9 +37,21 @@
 		</article>
 	</section>
 	<section id="one" class="wrapper style2">
+
 		<button id="agregar-input" onclick="agregar_input()">Agregar un Destino</button>
-		<input id="primer-direccion" type="text" placeholder="Ingresá una Direccion">
-		<div id="direccion-inputs"></div>
+
+		<div id="direccion-inputs">
+			<input class="direccion" id="primer-direccion" type="text" placeholder="Ingresá una Direccion">
+
+			<input class="direccion" id="segunda-direccion" type="text" placeholder="Ingresá una Direccion">
+
+			<input class="direccion" id="tercera-direccion" type="text" placeholder="Ingresá una Direccion">
+
+			<input class="direccion" id="cuarta-direccion" type="text" placeholder="Ingresá una Direccion">
+
+			<input class="direccion" id="quinta-direccion" type="text" placeholder="Ingresá una Direccion">
+		</div>
+
 		<div id="map"></div>
 	</section>
 
@@ -61,23 +73,61 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 	<script>
+		let map; let directionsService; let directionsRenderer, input_1_ac, input_2_ac, input_3_ac, input_4_ac, input_5_ac;
+
 		function initMap() {
-			let map; let directionsService; let directionsRenderer;
 
 			google.maps.event.addDomListener(window, "load", () => {
-				let input_1_ac = new google.maps.places.Autocomplete(document.getElementById("primer-direccion"));
+				input_1_ac = new google.maps.places.Autocomplete(document.getElementById("primer-direccion"));
+				input_2_ac = new google.maps.places.Autocomplete(document.getElementById("segunda-direccion"));
 			});
 
 			map = new google.maps.Map(document.getElementById("map"), { center: { lat: 39.7392, lng: -104.9903 }, zoom: 3, });
 
 			directionsService = new google.maps.DirectionsService();
-			directionsRenderer = new google.maps.DirectionsRenderer(); directionsRenderer.setMap(map);
+			directionsRenderer = new google.maps.DirectionsRenderer();
+			directionsRenderer.setMap(map);
 		}
 
-		function agregar_input() {
-			var d = document.getElementById("direccion-inputs");
+		function agregar_input() { }
 
-			d.innerHTML += "<br /> <span>Length: <input type='text' style='width:48px'  value='' /><small>(ft)</small</span>";
+		function printPlace() {
+			let i1 = input_1_ac.getPlace().geometry.location;
+			let i2 = input_2_ac.getPlace().geometry.location;
+			console.log(i1.lng());
+			console.log(i1.lat());
+			console.log(i2.lng());
+			console.log(i2.lat());
+		}
+
+		function calcular_distancia() {
+			let i1 = input_1_ac.getPlace().geometry.location;
+			let i2 = input_2_ac.getPlace().geometry.location;
+
+			const waypoints = [
+				{
+					location: new google.maps.LatLng(i1.lat(), i1.lng()),
+					stopover: true
+				},
+				{
+					location: new google.maps.LatLng(i2.lat(), i2.lng()),
+					stopover: true
+				}
+			];
+
+			const request = {
+				origin: waypoints[0].location,
+				destination: waypoints[waypoints.length - 1].location,
+				waypoints: waypoints.slice(1, -1),
+				optimizeWaypoints: true,
+				travelMode: google.maps.TravelMode.DRIVING,
+			};
+
+			directionsService.route(request, function (response, status) {
+				if (status === google.maps.DirectionsStatus.OK) {
+					directionsRenderer.setDirections(response);
+				} else { console.error("Directions request failed. Status:", status); }
+			});
 		}
 	</script>
 </body>
