@@ -35,6 +35,8 @@
 		</article>
 	</section>
 	<section id="one" class="wrapper style2">
+		<button id="agregar-input" onclick="agregar_input()">Agregar un Destino</button>
+		<div id="direccion-inputs"></div>
 		<div id="map"></div>
 	</section>
 
@@ -61,6 +63,11 @@
 			map = new google.maps.Map(document.getElementById("map"), { center: { lat: 39.7392, lng: -104.9903 }, zoom: 3, });
 			directionsService = new google.maps.DirectionsService();
 			directionsRenderer = new google.maps.DirectionsRenderer(); directionsRenderer.setMap(map);
+		}
+		function agregar_input() {
+			var d = document.getElementById("direccion-inputs");
+
+			d.innerHTML += "<br /> <span>Length: <input type='text' style='width:48px'  value='' /><small>(ft)</small</span>";
 		}
 	</script>
 </body>
