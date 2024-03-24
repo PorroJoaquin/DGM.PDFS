@@ -8,6 +8,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<link rel="stylesheet" href="../assets/css/calculadora-viajes.css">
+	<script defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdzoq2lq-NbzjAug4H2uVgTGnogG1c2F4&callback=initMap"></script>
+
 </head>
 
 <body>
@@ -52,6 +55,14 @@
 	<script src="assets/js/skel.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+	<script>
+		let map; let directionsService; let directionsRenderer;
+		function initMap() {
+			map = new google.maps.Map(document.getElementById("map"), { center: { lat: 39.7392, lng: -104.9903 }, zoom: 12, });
+			directionsService = new google.maps.DirectionsService();
+			directionsRenderer = new google.maps.DirectionsRenderer(); directionsRenderer.setMap(map);
+		}
+	</script>
 </body>
 
 </html>
