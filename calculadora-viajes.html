@@ -38,8 +38,6 @@
 	</section>
 	<section id="one" class="wrapper style2">
 
-		<button id="agregar-input" onclick="agregar_input()">Agregar un Destino</button>
-
 		<div id="direccion-inputs">
 			<input class="direccion" id="primer-direccion" type="text" placeholder="Ingresá una Direccion">
 
@@ -52,7 +50,21 @@
 			<input class="direccion" id="quinta-direccion" type="text" placeholder="Ingresá una Direccion">
 		</div>
 
+		<div class="checklist">
+			<input type="radio" id="camioneta" name="fav_language" value="HTML" checked>
+			<label for="camioneta">Camioneta</label><br>
+
+			<input type="radio" id="css" name="fav_language" value="CSS">
+			<label for="css">CSS</label><br>
+
+			<input type="radio" id="javascript" name="fav_language" value="JavaScript">
+			<label for="javascript">JavaScript</label><br>
+
+		</div>
+
+		<button id="calcular-distancia" onclick="calcular_distancia()">Calcular</button>
 		<div id="map"></div>
+		<div id="output-distancia"> </div>
 	</section>
 
 	<footer id="footer">
@@ -80,6 +92,9 @@
 			google.maps.event.addDomListener(window, "load", () => {
 				input_1_ac = new google.maps.places.Autocomplete(document.getElementById("primer-direccion"));
 				input_2_ac = new google.maps.places.Autocomplete(document.getElementById("segunda-direccion"));
+				input_3_ac = new google.maps.places.Autocomplete(document.getElementById("tercera-direccion"));
+				input_4_ac = new google.maps.places.Autocomplete(document.getElementById("cuarta-direccion"));
+				input_5_ac = new google.maps.places.Autocomplete(document.getElementById("quinta-direccion"));
 			});
 
 			map = new google.maps.Map(document.getElementById("map"), { center: { lat: 39.7392, lng: -104.9903 }, zoom: 3, });
@@ -101,24 +116,75 @@
 		}
 
 		function calcular_distancia() {
-			let i1 = input_1_ac.getPlace().geometry.location;
-			let i2 = input_2_ac.getPlace().geometry.location;
 
-			const waypoints = [
-				{
+			var iv1 = document.getElementById("primer-direccion").value;
+			var iv2 = document.getElementById("segunda-direccion").value;
+			var iv3 = document.getElementById("tercera-direccion").value;
+			var iv4 = document.getElementById("cuarta-direccion").value;
+			var iv5 = document.getElementById("quinta-direccion").value;
+
+			const waypoints = [];
+
+			// Add non-empty waypoints to the waypoints array
+			if (iv1) {
+				console.log("Adding waypoint for input 1");
+				let i1 = input_1_ac.getPlace().geometry.location;
+				waypoints.push({
 					location: new google.maps.LatLng(i1.lat(), i1.lng()),
 					stopover: true
-				},
-				{
+				});
+			} else {
+				console.log("Input 1 is empty");
+			}
+
+			if (iv2) {
+				console.log("Adding waypoint for input 2");
+				let i2 = input_2_ac.getPlace().geometry.location;
+				waypoints.push({
 					location: new google.maps.LatLng(i2.lat(), i2.lng()),
 					stopover: true
-				}
-			];
+				});
+			} else {
+				console.log("Input 2 is empty");
+			}
+
+			if (iv3) {
+				console.log("Adding waypoint for input 3");
+				let i3 = input_3_ac.getPlace().geometry.location;
+				waypoints.push({
+					location: new google.maps.LatLng(i3.lat(), i3.lng()),
+					stopover: true
+				});
+			} else {
+				console.log("Input 3 is empty");
+			}
+
+			if (iv4) {
+				console.log("Adding waypoint for input 4");
+				let i4 = input_4_ac.getPlace().geometry.location;
+				waypoints.push({
+					location: new google.maps.LatLng(i4.lat(), i4.lng()),
+					stopover: true
+				});
+			} else {
+				console.log("Input 4 is empty");
+			}
+
+			if (iv5) {
+				console.log("Adding waypoint for input 5");
+				let i5 = input_5_ac.getPlace().geometry.location;
+				waypoints.push({
+					location: new google.maps.LatLng(i5.lat(), i5.lng()),
+					stopover: true
+				});
+			} else {
+				console.log("Input 5 is empty");
+			}
 
 			const request = {
 				origin: waypoints[0].location,
-				destination: waypoints[waypoints.length - 1].location,
-				waypoints: waypoints.slice(1, -1),
+				destination: waypoints[0].location,
+				waypoints: waypoints.slice(1),
 				optimizeWaypoints: true,
 				travelMode: google.maps.TravelMode.DRIVING,
 			};
@@ -126,6 +192,16 @@
 			directionsService.route(request, function (response, status) {
 				if (status === google.maps.DirectionsStatus.OK) {
 					directionsRenderer.setDirections(response);
+					// Extract distance information
+					var totalDistance = 0;
+					var legs = response.routes[0].legs;
+					for (var i = 0; i < legs.length; i++) {
+						totalDistance += legs[i].distance.value; // distance in meters
+					}
+					totalDistance = totalDistance / 1000; // Convierto metros a kilometos
+
+					document.getElementById('output-distancia').innerHTML = "Distancia Total Recorrida: " + totalDistance + " km";
+
 				} else { console.error("Directions request failed. Status:", status); }
 			});
 		}
